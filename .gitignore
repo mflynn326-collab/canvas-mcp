@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 dist/
 scripts/register.log
+# Overleaf project list holds your Git token; it belongs in your user config folder, never here
+projects.json

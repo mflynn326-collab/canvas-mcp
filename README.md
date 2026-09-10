@@ -1,19 +1,45 @@
 # canvas-mcp
 
-An MCP server that lets Claude manage your Canvas LMS courses — uploading files,
-syncing local folders into course Files, and building modules, pages,
-assignments, and the syllabus — through the Canvas REST API.
+Let Claude work directly in your **Canvas LMS courses** and your **Overleaf
+LaTeX projects** — you just ask in plain English.
 
-Built and battle-tested at Texas State (`canvas.txstate.edu`), but it works with
-any Canvas instance: just set your school's Canvas URL during setup.
+- **Canvas** (the MCP server in this repo): upload files, sync local folders
+  into course Files, and build modules, pages, assignments, and the syllabus
+  through the Canvas REST API.
+- **Overleaf** (optional): a guided setup for the open-source
+  [Overleaf MCP](https://www.npmjs.com/package/@mjyoo2/overleaf-mcp), so
+  Claude can read your papers, pull out sections, and write edits back to
+  Overleaf.
+
+Set up either one or both. Built and battle-tested at Texas State
+(`canvas.txstate.edu`), but it works with any Canvas instance.
 
 **You do not need to know how to code to use this.** Claude does the
-installation for you (instructions for it are in [CLAUDE.md](CLAUDE.md)), and
-afterwards you manage your courses by talking to Claude in plain English.
+installation for you (its instructions are in [CLAUDE.md](CLAUDE.md)), and
+afterwards you just talk to Claude.
 
 ---
 
-## Setup
+## Before you start: download this project
+
+Either click **Code → Download ZIP** on
+[github.com/mflynn326-collab/canvas-mcp](https://github.com/mflynn326-collab/canvas-mcp)
+and unzip it somewhere permanent (e.g. `Documents\canvas-mcp` — not your
+Downloads folder), or clone it:
+
+```bash
+git clone https://github.com/mflynn326-collab/canvas-mcp
+```
+
+The folder must stay where you put it: Claude registers its exact location,
+and the helper scripts Claude uses later live here.
+
+All the setup below happens in the **Claude desktop app → Code tab**, with this
+`canvas-mcp` folder open (use the folder picker to choose it).
+
+---
+
+## Part 1 — Canvas
 
 ### Step 1 — Get a Canvas API token
 
@@ -35,49 +61,28 @@ document. During setup you will paste it into a private local file called
 you for it directly. You can revoke the token at any time from the same
 Approved Integrations page.
 
-### Step 2 — Download this project
+### Step 2 — Let Claude set it up
 
-Either click **Code → Download ZIP** on
-[github.com/mflynn326-collab/canvas-mcp](https://github.com/mflynn326-collab/canvas-mcp)
-and unzip it somewhere permanent (e.g. `Documents\canvas-mcp` — not your
-Downloads folder), or clone it:
+With the `canvas-mcp` folder open in the Code tab, send:
 
-```bash
-git clone https://github.com/mflynn326-collab/canvas-mcp
-```
+> Please read CLAUDE.md and set up the Canvas MCP server for me. My Canvas
+> URL is https://canvas.txstate.edu
 
-The folder must stay where you put it — Claude registers its exact location.
+(swap in your school's Canvas URL if different)
 
-### Step 3 — Let Claude set it up
+Claude will install what's needed, then pause and ask you to paste your token
+into the `.env` file it opens for you. Do that, save the file, and tell Claude
+you're done. It will verify the connection by listing your courses and
+register the server with the Claude app.
 
-1. Open the **Claude desktop app**, go to the **Code** tab, and open the
-   `canvas-mcp` folder you just unzipped.
-2. Send this prompt:
+### Step 3 — Fully quit Claude and reopen it
 
-   > Please read CLAUDE.md and set up the Canvas MCP server for me. My Canvas
-   > URL is https://canvas.txstate.edu
+Required — see [Fully quit and reopen Claude](#fully-quit-and-reopen-claude-required)
+below. Closing the window is not enough.
 
-   (swap in your school's Canvas URL if different)
-3. Claude will install what's needed, then pause and ask you to paste your
-   token into the `.env` file it opens for you. Do that, save the file, and
-   tell Claude you're done. It will verify the connection by listing your
-   courses and register the server with the Claude app.
+### Step 4 — Try it
 
-### Step 4 — Fully quit Claude and reopen (required)
-
-The Claude app only loads MCP servers when it starts, and closing the window
-does **not** fully quit it. To actually restart it on Windows:
-
-1. Close the Claude window.
-2. Press **Ctrl+Shift+Esc** to open Task Manager.
-3. Find every **Claude** process, right-click → **End task**.
-4. Reopen Claude.
-
-(macOS: Cmd+Q fully quits; then reopen.)
-
-### Step 5 — Try it
-
-In a new Claude session, ask:
+In a new Claude chat, ask:
 
 > List my Canvas courses
 
@@ -90,7 +95,125 @@ If you get your course list back, you're done. From there, things like:
 
 ---
 
-## What Claude can do with it (23 tools)
+## Part 2 — Overleaf (optional)
+
+Once connected, Claude can list the files in your Overleaf projects, read them,
+show a paper's section outline, pull out a single section, and write changes
+back — every edit is saved to Overleaf and shows up in the project's History.
+
+### What you need
+
+1. **Overleaf Git integration.** It usually requires a paid Overleaf plan or a
+   university license. Check: Overleaf → **Account Settings** → look for
+   **Git Integration**. If it isn't there, your plan doesn't include it and
+   this part won't work.
+2. **An Overleaf Git token.** In Account Settings → Git Integration, create a
+   token. One token covers every project in your account. Treat it like a
+   password: don't paste it into a chat. Claude will open a private file for
+   you to paste it into.
+3. **The link to one of your Overleaf projects** — copy the address from your
+   browser while the project is open (`https://www.overleaf.com/project/...`).
+
+Claude installs the remaining prerequisites (Node.js and Git) if they're missing.
+
+### Step 1 — Ask Claude to set it up
+
+With the `canvas-mcp` folder open in the Code tab, send (with your own link and
+a short name for the project):
+
+> Please read CLAUDE.md and set up the Overleaf MCP for me. My first project
+> is https://www.overleaf.com/project/PASTE-ID-HERE and I'd like to call it
+> "thesis".
+
+Claude will:
+
+- install Node.js and Git if needed,
+- create your private project list — on Windows
+  `%APPDATA%\overleaf-mcp\projects.json`, outside this folder, so it is never
+  shared or uploaded,
+- open that file in Notepad and ask you to paste your Git token over the
+  placeholder — do that, save, and tell Claude you're done,
+- check it can reach your project, and register the Overleaf server with the
+  Claude app.
+
+### Step 2 — Fully quit Claude and reopen it
+
+Required — see [Fully quit and reopen Claude](#fully-quit-and-reopen-claude-required).
+
+### Step 3 — Try it
+
+In a new chat:
+
+> List my Overleaf projects
+
+Then things like:
+
+- "Show me the section outline of main.tex in my thesis project"
+- "Read the introduction of main.tex in thesis and suggest tighter wording — show me before changing anything"
+- "Replace the abstract in thesis with this version: ..."
+
+### Adding more Overleaf projects
+
+Claude can't browse your Overleaf account. It can only see the projects in your
+local project list, so **each project is added once**; after that it's
+available in every chat.
+
+To add one, open the `canvas-mcp` folder in the Code tab and ask:
+
+> Add my Overleaf project https://www.overleaf.com/project/PASTE-ID-HERE as "crypto"
+
+Claude runs a helper script that reuses the token you already saved (you never
+paste it again), checks it can open the project, and adds it. **Then fully
+quit and reopen Claude** — the Overleaf server reads its project list only
+when Claude starts, so a new project won't show up until you do. After that,
+in any chat: *"In my crypto project, list the files."*
+
+Other things you can ask (with the `canvas-mcp` folder open):
+
+- "Which Overleaf projects do I have set up?"
+- "Check that all my Overleaf projects still connect"
+- "Remove the crypto Overleaf project"
+- "I have a new Overleaf token" (after regenerating or revoking the old one)
+
+> **Why can't I just paste a project link into a chat?** The Overleaf server
+> only knows the projects in your list, which is where each project is paired
+> with your token, and it reads that list once when Claude starts. A link
+> pasted into a regular chat gives it nothing it can use. Add the project once
+> (above), restart Claude, and from then on just refer to it by its name.
+
+### Good to know
+
+- Your **first project becomes the default**: Claude uses it when you don't
+  name a project.
+- Edits Claude makes are saved straight to Overleaf as commits by
+  "Overleaf MCP". The project's **History** in Overleaf shows each one and lets
+  you roll back. Asking Claude to show you a change before writing it is a good
+  habit.
+- Your token lives only in your private project list, never in this folder or
+  on GitHub.
+
+---
+
+## Fully quit and reopen Claude (required)
+
+The Claude app only loads its connections (MCP servers), and the Overleaf
+project list, when it starts, and **closing the window does not fully quit
+it**. Do this after setting up Canvas, after setting up Overleaf, and after
+every time you add or remove an Overleaf project:
+
+1. Close the Claude window.
+2. Press **Ctrl+Shift+Esc** to open **Task Manager**.
+3. Find every **Claude** process (there are usually several), right-click
+   each → **End task**.
+4. Reopen Claude.
+
+(macOS: **Cmd+Q** fully quits; then reopen.)
+
+The new tools appear in your next chat.
+
+---
+
+## What Claude can do with Canvas (23 tools)
 
 Listing courses, course structure, and files; uploading files and syncing whole
 local folders (dry-run first, never deletes); creating and editing modules,
@@ -98,7 +221,7 @@ module items, pages, and assignments; setting the syllabus; posting
 announcements; publishing/unpublishing; locking folders; and targeted deletes
 (page, file, module item) for repairs.
 
-## Safety design
+## Canvas safety design
 
 - Everything is created **unpublished**; publishing is a separate explicit step.
 - `sync_folder` defaults to **dry-run** and never deletes anything from Canvas.
@@ -121,15 +244,22 @@ announcements; publishing/unpublishing; locking folders; and targeted deletes
 
 ## Troubleshooting
 
-- **Canvas tools missing after restart:** the Claude app occasionally rewrites
-  its config and drops manually-added servers. Fully quit Claude (Step 4),
-  run `python scripts/register_canvas.py` from a terminal, then reopen. Ask
+- **A new Overleaf project doesn't show up / Claude only finds "default":**
+  Claude wasn't fully quit. End every Claude process in Task Manager and
+  reopen (see above).
+- **Canvas or Overleaf tools missing after a restart:** the Claude app
+  occasionally rewrites its config and drops manually-added servers. Fully
+  quit Claude, run `python scripts/register_canvas.py` and/or
+  `python scripts/register_overleaf.py` from a terminal, then reopen. Ask
   Claude about `scripts/watch_and_register.ps1` if it keeps happening.
-- **"CANVAS_API_TOKEN is not set"** or authentication errors: re-check `.env` —
-  the token must be on the `CANVAS_API_TOKEN=` line with no quotes or spaces,
-  and your Canvas URL on the `CANVAS_BASE_URL=` line.
-- **Verify the connection any time:** `uv run python scripts/smoke_test.py`
-  from the project folder.
+- **"CANVAS_API_TOKEN is not set"** or Canvas authentication errors: re-check
+  `.env` — the token must be on the `CANVAS_API_TOKEN=` line with no quotes or
+  spaces, and your Canvas URL on the `CANVAS_BASE_URL=` line.
+- **Overleaf "authentication failed":** the token was revoked or expired. Ask
+  Claude "I have a new Overleaf token" (with the `canvas-mcp` folder open).
+- **Verify the connections any time**, from the project folder:
+  `uv run python scripts/smoke_test.py` (Canvas) and
+  `python scripts/add_overleaf_project.py --verify` (Overleaf).
 
 ## Layout
 
@@ -137,5 +267,9 @@ announcements; publishing/unpublishing; locking folders; and targeted deletes
 - `src/canvas_mcp/client.py` — auth, pagination, rate-limit backoff, error handling
 - `src/canvas_mcp/files.py` — Canvas 3-step file upload, folder-case resolution, sync
 - `src/canvas_mcp/content.py` — modules, pages, assignments, syllabus, announcements
-- `scripts/` — smoke test, config registration helpers, live regression test
+- `scripts/add_overleaf_project.py` — add, list, verify, and remove Overleaf
+  projects (reuses your saved token)
+- `scripts/register_canvas.py`, `scripts/register_overleaf.py` — add the
+  servers to the Claude app's config (standard and Microsoft Store installs)
+- `scripts/` also has the Canvas smoke test and a live regression test
   (`regression_test.py <course_id>` — point it at an **unpublished** course only)

@@ -1,10 +1,10 @@
 """Regression test for the folder-case, overwrite, and page-escaping bugs.
 
-Runs against a real course (default: unpublished QFE 5330 sandbox), creating
-everything under clearly-marked test names, and deletes all artifacts at the
-end regardless of pass/fail.
+Runs against a real course you name (use an unpublished sandbox course, never
+one with students), creating everything under clearly-marked test names, and
+deletes all artifacts at the end regardless of pass/fail.
 
-    uv run python scripts/regression_test.py [course_id]
+    uv run python scripts/regression_test.py <course_id>
 """
 
 import sys
@@ -18,7 +18,9 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 from canvas_mcp import content, files  # noqa: E402
 from canvas_mcp.client import CanvasClient  # noqa: E402
 
-COURSE = int(sys.argv[1]) if len(sys.argv) > 1 else 2710702
+if len(sys.argv) < 2:
+    sys.exit("usage: uv run python scripts/regression_test.py <course_id>  (unpublished sandbox course only)")
+COURSE = int(sys.argv[1])
 FOLDER = "MCP Regression Week 01"
 PAGE_TITLE = "MCP Regression Page (delete me)"
 
