@@ -95,7 +95,7 @@ If you get your course list back, you're done. From there, things like:
 
 ---
 
-## Part 2 — Overleaf (optional)
+## Part 2 — Overleaf
 
 Once connected, Claude can list the files in your Overleaf projects, read them,
 show a paper's section outline, pull out a single section, and write changes
