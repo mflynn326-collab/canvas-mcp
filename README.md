@@ -37,11 +37,13 @@ Approved Integrations page.
 
 ### Step 2 — Download this project
 
-Either click **Code → Download ZIP** on GitHub and unzip it somewhere permanent
-(e.g. `Documents\canvas-mcp` — not your Downloads folder), or clone it:
+Either click **Code → Download ZIP** on
+[github.com/mflynn326-collab/canvas-mcp](https://github.com/mflynn326-collab/canvas-mcp)
+and unzip it somewhere permanent (e.g. `Documents\canvas-mcp` — not your
+Downloads folder), or clone it:
 
 ```bash
-git clone https://github.com/<this-repo> canvas-mcp
+git clone https://github.com/mflynn326-collab/canvas-mcp
 ```
 
 The folder must stay where you put it — Claude registers its exact location.
